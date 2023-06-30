@@ -14,7 +14,8 @@ struct TimeEntry {
     date: DateTime<Local>,
 }
 
-fn get_database() -> Result<()>{
+pub fn get_database() -> Result<()>{
     let conn = Connection::open("time.db")?;
+
     Ok(())
 }
