@@ -7,6 +7,7 @@ struct App {
     name: String,
 }
 
+#[derive(Debug)]
 struct TimeEntry {
     id: usize,
     app_id: usize,
@@ -14,8 +15,27 @@ struct TimeEntry {
     date: DateTime<Local>,
 }
 
-pub fn get_database() -> Result<()>{
+pub fn get_database() -> Result<Connection>{
     let conn = Connection::open("time.db")?;
 
-    Ok(())
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS App (
+            id    INTEGER PRIMARY KEY,
+            name  TEXT NOT NULL
+        )",
+        (),
+    )?;
+
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS TimeEntry (
+             id INTEGER PRIMARY KEY,
+             app_id INTEGER NOT NULL,
+             duration INTEGER NOT NULL,
+             date TEXT NOT NULL,
+             FOREIGN KEY (app_id) REFERENCES App(id)
+         )",
+        (),
+    )?;
+
+    Ok(conn)
 }
